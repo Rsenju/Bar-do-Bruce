@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bar do Bruce — Gastronomia em Salvador</title>
+  <meta name="description" content="Bar do Bruce: uma experiência gastronômica única em Salvador, Bahia. Reservas, cardápio e ambiente sofisticado." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0A0A0A;
+      --bg2: #141414;
+      --bg3: #1A1A1A;
+      --accent: #C8F542;
+      --accent-dim: #a8d030;
+      --white: #FFFFFF;
+      --gray: #9CA3AF;
+      --gray2: #4B5563;
+      --border: rgba(255,255,255,0.07);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    img { display: block; max-width: 100%; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+    /* ── CURSOR ── */
+    .cursor {
+      position: fixed; width: 10px; height: 10px;
+      background: var(--accent); border-radius: 50%;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s, width 0.3s, height 0.3s, opacity 0.3s;
+      mix-blend-mode: difference;
+    }
+    .cursor-ring {
+      position: fixed; width: 36px; height: 36px;
+      border: 1px solid rgba(200,245,66,0.5); border-radius: 50%;
+      pointer-events: none; z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: all 0.18s ease;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      padding: 0 5%;
+      height: 70px;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: background 0.4s, backdrop-filter 0.4s;
+    }
+    header.scrolled {
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+    }
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem; font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .logo span { color: var(--accent); }
+    nav { display: flex; align-items: center; gap: 2.5rem; }
+    nav a {
+      font-size: 0.8rem; font-weight: 500;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--gray);
+      transition: color 0.2s;
+      position: relative;
+    }
+    nav a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 1px; background: var(--accent);
+      transition: width 0.3s;
+    }
+    nav a:hover { color: var(--white); }
+    nav a:hover::after { width: 100%; }
+    .nav-cta {
+      background: var(--accent); color: #0A0A0A !important;
+      padding: 0.55rem 1.3rem; border-radius: 2px;
+      font-weight: 600; font-size: 0.75rem !important;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      transition: background 0.2s, transform 0.2s !important;
+    }
+    .nav-cta::after { display: none !important; }
+    .nav-cta:hover { background: var(--accent-dim) !important; transform: translateY(-1px); }
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px; cursor: pointer; z-index: 1001;
+    }
+    .hamburger span { width: 24px; height: 1.5px; background: var(--white); transition: all 0.3s; }
+    .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(4px, 5px); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(4px, -5px); }
+    .mobile-nav {
+      display: none; position: fixed; inset: 0; background: var(--bg);
+      z-index: 999; flex-direction: column; align-items: center;
+      justify-content: center; gap: 2rem;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    }
+    .mobile-nav.open { opacity: 1; pointer-events: all; display: flex; }
+    .mobile-nav a {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem; font-weight: 700; color: var(--white);
+      transition: color 0.2s;
+    }
+    .mobile-nav a:hover { color: var(--accent); }
+    .mobile-nav .nav-cta {
+      font-family: 'Inter', sans-serif !important;
+      font-size: 0.85rem !important;
+      padding: 0.7rem 2rem;
+    }
+
+    /* ── HERO ── */
+    #hero {
+      position: relative; height: 100vh; min-height: 600px;
+      display: flex; align-items: center;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1920&q=80') center/cover no-repeat;
+    }
+    .hero-bg::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(10,10,10,0.88) 0%, rgba(10,10,10,0.6) 50%, rgba(10,10,10,0.75) 100%);
+    }
+    .hero-content {
+      position: relative; z-index: 2;
+      padding: 0 6%;
+      max-width: 900px;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 0.7rem;
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 1.5rem;
+      opacity: 0; transform: translateY(20px);
+      animation: fadeUp 0.8s 0.2s forwards;
+    }
+    .hero-eyebrow::before {
+      content: ''; width: 30px; height: 1px; background: var(--accent);
+    }
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3.2rem, 8vw, 7.5rem);
+      font-weight: 900; line-height: 0.95;
+      letter-spacing: -0.02em;
+      opacity: 0; transform: translateY(30px);
+      animation: fadeUp 0.9s 0.4s forwards;
+    }
+    h1 em { font-style: italic; color: var(--accent); }
+    .hero-sub {
+      margin-top: 1.5rem;
+      font-size: clamp(0.95rem, 2vw, 1.1rem);
+      color: var(--gray);
+      line-height: 1.7; max-width: 480px;
+      opacity: 0; transform: translateY(20px);
+      animation: fadeUp 0.8s 0.6s forwards;
+    }
+    .hero-btns {
+      margin-top: 2.5rem; display: flex; gap: 1rem; flex-wrap: wrap;
+      opacity: 0; transform: translateY(20px);
+      animation: fadeUp 0.8s 0.8s forwards;
+    }
+    .btn-primary {
+      background: var(--accent); color: #0A0A0A;
+      padding: 0.9rem 2.2rem; border-radius: 2px;
+      font-weight: 700; font-size: 0.78rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      border: none; cursor: pointer;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+    }
+    .btn-primary:hover {
+      background: var(--accent-dim);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(200,245,66,0.25);
+    }
+    .btn-outline {
+      background: transparent; color: var(--white);
+      padding: 0.9rem 2.2rem; border-radius: 2px;
+      font-weight: 600; font-size: 0.78rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      border: 1px solid rgba(255,255,255,0.2); cursor: pointer;
+      transition: border-color 0.2s, color 0.2s, transform 0.2s;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+    }
+    .btn-outline:hover {
+      border-color: var(--accent); color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .hero-scroll {
+      position: absolute; bottom: 2.5rem; left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center;
+      gap: 0.4rem; opacity: 0.5;
+      animation: bounce 2s infinite;
+      z-index: 2;
+    }
+    .hero-scroll span { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray); }
+    .scroll-line { width: 1px; height: 40px; background: linear-gradient(to bottom, transparent, var(--gray)); }
+    .hero-badge {
+      position: absolute; right: 6%; bottom: 15%; z-index: 2;
+      width: 110px; height: 110px;
+      background: var(--accent); border-radius: 50%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif;
+      color: #0A0A0A; text-align: center;
+      animation: rotate 20s linear infinite;
+      opacity: 0; animation: fadeIn 1s 1.2s forwards, rotate 20s 1.2s linear infinite;
+    }
+    .hero-badge-inner { font-size: 0.75rem; font-weight: 700; line-height: 1.3; text-align: center; padding: 0.3rem; }
+
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { to { opacity: 1; } }
+    @keyframes bounce { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(6px); } }
+    @keyframes rotate { to { transform: rotate(360deg); } }
+
+    /* ── SECTION BASE ── */
+    section { padding: 7rem 6%; }
+    .section-tag {
+      display: inline-flex; align-items: center; gap: 0.7rem;
+      font-size: 0.68rem; font-weight: 600; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 1.2rem;
+    }
+    .section-tag::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      font-weight: 800; line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+    h2 em { font-style: italic; color: var(--accent); }
+    .reveal {
+      opacity: 0; transform: translateY(40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── SOBRE ── */
+    #sobre {
+      background: var(--bg2);
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 5rem; align-items: center;
+    }
+    .sobre-img-wrap {
+      position: relative;
+    }
+    .sobre-img-main {
+      width: 100%; aspect-ratio: 4/5;
+      object-fit: cover; border-radius: 2px;
+    }
+    .sobre-img-float {
+      position: absolute; bottom: -2rem; right: -2rem;
+      width: 55%; aspect-ratio: 1;
+      object-fit: cover; border-radius: 2px;
+      border: 4px solid var(--bg2);
+    }
+    .sobre-stat {
+      display: inline-flex; align-items: baseline; gap: 0.4rem;
+      margin-top: 0.5rem;
+    }
+    .sobre-stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem; font-weight: 900; color: var(--accent);
+      line-height: 1;
+    }
+    .sobre-stat-label { font-size: 0.8rem; color: var(--gray); letter-spacing: 0.05em; }
+    .sobre-text { color: var(--gray); font-size: 1rem; line-height: 1.8; margin-top: 1.5rem; }
+    .sobre-stats { display: flex; gap: 3rem; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+
+    /* ── RESERVAS ── */
+    #reservas { background: var(--bg); }
+    .reservas-inner { max-width: 900px; margin: 0 auto; }
+    .reservas-form {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 4px; padding: 2.5rem;
+      margin-top: 3rem;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.2rem; margin-bottom: 2rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+    .form-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray); }
+    .form-input, .form-select {
+      background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+      color: var(--white); border-radius: 2px;
+      padding: 0.75rem 1rem; font-size: 0.9rem; font-family: 'Inter', sans-serif;
+      outline: none; transition: border-color 0.2s;
+      -webkit-appearance: none; appearance: none;
+      cursor: pointer;
+    }
+    .form-input:focus, .form-select:focus { border-color: var(--accent); }
+    .form-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239CA3AF' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; padding-right: 2.5rem; }
+    .mesa-section { margin-top: 0.5rem; }
+    .mesa-title { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray); margin-bottom: 1rem; }
+    .mesas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 0.75rem; }
+    .mesa-card {
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+      border-radius: 3px; padding: 0.9rem 0.5rem;
+      text-align: center; cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .mesa-card:hover:not(.ocupado) { border-color: rgba(200,245,66,0.4); background: rgba(200,245,66,0.05); }
+    .mesa-card.disponivel { border-color: rgba(34,197,94,0.3); }
+    .mesa-card.selecionado { border-color: var(--accent); background: rgba(200,245,66,0.1); }
+    .mesa-card.ocupado { opacity: 0.4; cursor: not-allowed; border-color: var(--border); }
+    .mesa-icon { font-size: 1.3rem; margin-bottom: 0.3rem; }
+    .mesa-label { font-size: 0.7rem; font-weight: 600; color: var(--gray); letter-spacing: 0.05em; }
+    .mesa-card.selecionado .mesa-label { color: var(--accent); }
+    .mesa-status { font-size: 0.6rem; margin-top: 0.2rem; }
+    .mesa-status.verde { color: #22c55e; }
+    .mesa-status.cinza { color: var(--gray2); }
+    .mesa-status.sel { color: var(--accent); }
+    .reserva-confirm {
+      margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+    }
+    .reserva-summary { font-size: 0.85rem; color: var(--gray); }
+    .reserva-summary strong { color: var(--white); }
+
+    /* ── CARDÁPIO ── */
+    #cardapio { background: var(--bg2); }
+    .menu-tabs {
+      display: flex; gap: 0; margin-top: 2.5rem;
+      border-bottom: 1px solid var(--border); flex-wrap: wrap;
+    }
+    .menu-tab {
+      padding: 0.75rem 1.5rem;
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--gray);
+      cursor: pointer; border: none; background: none;
+      border-bottom: 2px solid transparent; margin-bottom: -1px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .menu-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .menu-tab:hover:not(.active) { color: var(--white); }
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem; margin-top: 2.5rem;
+    }
+    .menu-card {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 3px; overflow: hidden;
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+    }
+    .menu-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(200,245,66,0.25);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .menu-card-img {
+      width: 100%; aspect-ratio: 3/2;
+      object-fit: cover;
+      transition: transform 0.5s;
+    }
+    .menu-card:hover .menu-card-img { transform: scale(1.04); }
+    .menu-card-body { padding: 1.2rem; }
+    .menu-card-name { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 600; }
+    .menu-card-desc { font-size: 0.82rem; color: var(--gray); margin-top: 0.4rem; line-height: 1.6; }
+    .menu-card-foot {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 1rem; padding-top: 0.8rem; border-top: 1px solid var(--border);
+    }
+    .menu-card-price { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; color: var(--accent); }
+    .menu-card-tag { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray2); }
+    /* bebidas sem imagem */
+    .menu-card.no-img .menu-card-img { display: none; }
+    .menu-card.no-img { display: flex; flex-direction: column; justify-content: center; padding: 0; }
+    .menu-card.no-img .menu-card-body { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+
+    /* ── GALERIA ── */
+    #galeria { background: var(--bg); }
+    .galeria-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: auto auto;
+      gap: 0.5rem; margin-top: 3rem;
+    }
+    .galeria-item {
+      overflow: hidden; position: relative; cursor: zoom-in;
+      border-radius: 2px;
+    }
+    .galeria-item:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+    .galeria-item:nth-child(4) { grid-column: span 2; }
+    .galeria-img {
+      width: 100%; height: 100%; min-height: 200px;
+      object-fit: cover;
+      transition: transform 0.5s, filter 0.3s;
+    }
+    .galeria-item:hover .galeria-img { transform: scale(1.05); filter: brightness(0.7); }
+    .galeria-overlay {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .galeria-item:hover .galeria-overlay { opacity: 1; }
+    .galeria-overlay-icon { font-size: 2rem; color: var(--white); }
+
+    /* LIGHTBOX */
+    .lightbox {
+      position: fixed; inset: 0; z-index: 2000;
+      background: rgba(0,0,0,0.95);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    }
+    .lightbox.open { opacity: 1; pointer-events: all; }
+    .lightbox img { max-width: 90vw; max-height: 90vh; object-fit: contain; border-radius: 2px; }
+    .lightbox-close {
+      position: absolute; top: 1.5rem; right: 1.5rem;
+      font-size: 2rem; cursor: pointer; color: var(--gray);
+      transition: color 0.2s;
+    }
+    .lightbox-close:hover { color: var(--white); }
+
+    /* ── CONTATO ── */
+    #contato { background: var(--bg2); }
+    .contato-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 4rem; margin-top: 3rem; }
+    .contato-info { display: flex; flex-direction: column; gap: 2rem; }
+    .contato-item { display: flex; gap: 1rem; align-items: flex-start; }
+    .contato-icon {
+      width: 44px; height: 44px; flex-shrink: 0;
+      background: rgba(200,245,66,0.08); border: 1px solid rgba(200,245,66,0.2);
+      border-radius: 2px; display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+    }
+    .contato-item-title { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.3rem; }
+    .contato-item-text { font-size: 0.9rem; color: var(--gray); line-height: 1.6; }
+    .contato-map {
+      border-radius: 3px; overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .contato-map iframe { width: 100%; height: 100%; min-height: 350px; border: none; filter: grayscale(1) invert(1) contrast(0.8); }
+    .whatsapp-btn {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: #25D366; color: #fff;
+      padding: 0.65rem 1.4rem; border-radius: 2px;
+      font-weight: 600; font-size: 0.8rem; letter-spacing: 0.05em;
+      margin-top: 0.5rem; transition: background 0.2s, transform 0.2s;
+    }
+    .whatsapp-btn:hover { background: #1da851; transform: translateY(-1px); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #050505; border-top: 1px solid var(--border);
+      padding: 3rem 6%;
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 2rem; align-items: start;
+    }
+    .footer-brand .logo { font-size: 1.3rem; margin-bottom: 0.7rem; }
+    .footer-brand p { font-size: 0.82rem; color: var(--gray); line-height: 1.7; }
+    .footer-links h4, .footer-hours h4 {
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 1rem;
+    }
+    .footer-links a { display: block; font-size: 0.85rem; color: var(--gray); margin-bottom: 0.5rem; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--white); }
+    .footer-hours p { font-size: 0.85rem; color: var(--gray); line-height: 1.8; }
+    .footer-bottom {
+      background: #050505; padding: 1rem 6%;
+      display: flex; justify-content: space-between; align-items: center;
+      border-top: 1px solid var(--border); flex-wrap: wrap; gap: 0.5rem;
+    }
+    .footer-bottom p { font-size: 0.75rem; color: var(--gray2); }
+
+    /* ── NOTIFICATIONS ── */
+    .toast {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 3000;
+      background: var(--bg3); border: 1px solid var(--accent);
+      border-radius: 3px; padding: 1rem 1.5rem;
+      font-size: 0.85rem; color: var(--white);
+      transform: translateY(20px); opacity: 0;
+      transition: all 0.4s;
+      pointer-events: none;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast-accent { color: var(--accent); font-weight: 600; }
+
+    /* ── TIPO TOGGLE ── */
+    .tipo-toggle { display: flex; gap: 0; margin-bottom: 2rem; border: 1px solid var(--border); border-radius: 2px; overflow: hidden; width: fit-content; }
+    .tipo-btn {
+      padding: 0.6rem 1.5rem; font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      cursor: pointer; border: none; background: transparent; color: var(--gray);
+      transition: all 0.2s;
+    }
+    .tipo-btn.active { background: var(--accent); color: #0A0A0A; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      #sobre { grid-template-columns: 1fr; gap: 3rem; }
+      .sobre-img-float { right: -1rem; }
+      .menu-grid { grid-template-columns: repeat(2, 1fr); }
+      footer { grid-template-columns: 1fr 1fr; }
+      .footer-hours { grid-column: span 2; }
+      .galeria-grid { grid-template-columns: repeat(3, 1fr); }
+      .galeria-item:nth-child(1) { grid-column: span 2; }
+      .galeria-item:nth-child(4) { grid-column: 1; }
+    }
+    @media (max-width: 768px) {
+      section { padding: 5rem 5%; }
+      nav { display: none; }
+      .hamburger { display: flex; }
+      .hero-badge { display: none; }
+      .form-row { grid-template-columns: 1fr; }
+      .menu-grid { grid-template-columns: 1fr 1fr; }
+      .contato-grid { grid-template-columns: 1fr; }
+      .galeria-grid { grid-template-columns: repeat(2, 1fr); }
+      .galeria-item:nth-child(1) { grid-column: span 2; grid-row: span 1; }
+      .galeria-item:nth-child(4) { grid-column: span 2; }
+      footer { grid-template-columns: 1fr; }
+      .footer-hours { grid-column: 1; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+      .sobre-stats { flex-direction: column; gap: 1rem; }
+    }
+    @media (max-width: 480px) {
+      h1 { font-size: 2.8rem; }
+      .menu-grid { grid-template-columns: 1fr; }
+      .galeria-grid { grid-template-columns: 1fr 1fr; }
+      .mesas-grid { grid-template-columns: repeat(3, 1fr); }
+      .reservas-form { padding: 1.5rem; }
+      .reserva-confirm { flex-direction: column; }
+      .tipo-toggle { width: 100%; }
+      .tipo-btn { flex: 1; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CURSOR -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox">
+    <span class="lightbox-close" id="lbClose">✕</span>
+    <img src="" alt="" id="lbImg" />
+  </div>
+
+  <!-- MOBILE NAV -->
+  <div class="mobile-nav" id="mobileNav">
+    <a href="#hero" onclick="closeMobileNav()">Home</a>
+    <a href="#cardapio" onclick="closeMobileNav()">Cardápio</a>
+    <a href="#reservas" onclick="closeMobileNav()">Reservas</a>
+    <a href="#contato" onclick="closeMobileNav()">Contato</a>
+    <a href="#reservas" class="btn-primary nav-cta" onclick="closeMobileNav()">Reservar Mesa</a>
+  </div>
+
+  <!-- HEADER -->
+  <header id="header">
+    <a href="#hero" class="logo">Bar do <span>Bruce</span></a>
+    <nav>
+      <a href="#hero">Home</a>
+      <a href="#cardapio">Cardápio</a>
+      <a href="#reservas">Reservas</a>
+      <a href="#contato">Contato</a>
+      <a href="#reservas" class="nav-cta">Reservar</a>
+    </nav>
+    <div class="hamburger" id="hamburger" onclick="toggleMobileNav()">
+      <span></span><span></span><span></span>
+    </div>
+  </header>
+
+  <!-- ── HERO ── -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">Salvador, Bahia · Est. 2019</div>
+      <h1>SEJA<br /><em>BEM‑VINDO</em></h1>
+      <p class="hero-sub">Uma experiência gastronômica única onde a cultura baiana encontra a sofisticação moderna. Cada prato conta uma história.</p>
+      <div class="hero-btns">
+        <a href="#reservas" class="btn-primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Fazer Reserva
+        </a>
+        <a href="#cardapio" class="btn-outline">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+          Ver Cardápio
+        </a>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+    <div class="hero-badge">
+      <div class="hero-badge-inner">★ DESDE<br/>2019<br/>SALVADOR</div>
+    </div>
+  </section>
+
+  <!-- ── SOBRE ── -->
+  <section id="sobre">
+    <div class="sobre-img-wrap reveal">
+      <img class="sobre-img-main" src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80" alt="Interior do Bar do Bruce" loading="lazy" />
+      <img class="sobre-img-float" src="https://images.unsplash.com/photo-1482275548304-a58859dc31b7?w=500&q=80" alt="Detalhe gastronômico" loading="lazy" />
+    </div>
+    <div class="reveal" style="transition-delay:0.15s">
+      <div class="section-tag">Nossa História</div>
+      <h2>Onde Salvador<br />se <em>senta à mesa</em></h2>
+      <p class="sobre-text">
+        O Bar do Bruce nasceu do amor pela cozinha baiana e pela boa conversa. No coração de Salvador, criamos um espaço onde tradição e modernidade se encontram: ingredientes locais, técnicas contemporâneas e uma atmosfera que convida você a ficar.
+      </p>
+      <p class="sobre-text">
+        Cada prato carrega a alma do Recôncavo — o dendê, o aipim, o charque — com apresentações que surpreendem e sabores que emocionam. Bem-vindo ao nosso lar.
+      </p>
+      <div class="sobre-stats">
+        <div class="sobre-stat">
+          <span class="sobre-stat-num">6+</span>
+          <span class="sobre-stat-label">Anos<br/>de história</span>
+        </div>
+        <div class="sobre-stat">
+          <span class="sobre-stat-num">3k</span>
+          <span class="sobre-stat-label">Clientes<br/>satisfeitos</span>
+        </div>
+        <div class="sobre-stat">
+          <span class="sobre-stat-num">18</span>
+          <span class="sobre-stat-label">Pratos<br/>exclusivos</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── RESERVAS ── -->
+  <section id="reservas">
+    <div class="reservas-inner">
+      <div class="reveal">
+        <div class="section-tag">Reservas</div>
+        <h2>Reserve sua<br /><em>experiência</em></h2>
+      </div>
+      <div class="reservas-form reveal" style="transition-delay:0.15s">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Data</label>
+            <input type="date" class="form-input" id="resDate" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Horário</label>
+            <select class="form-select" id="resTime">
+              <option value="">Selecione</option>
+              <option>12:00</option><option>13:00</option><option>14:00</option>
+              <option>18:00</option><option>19:00</option><option>20:00</option>
+              <option>21:00</option><option>22:00</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Pessoas</label>
+            <select class="form-select" id="resPax">
+              <option>2 pessoas</option><option>3 pessoas</option>
+              <option>4 pessoas</option><option>5 pessoas</option>
+              <option>6+ pessoas</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mesa-section">
+          <div class="tipo-toggle" id="tipoToggle">
+            <button class="tipo-btn active" onclick="setTipo('mesa', this)">Mesas</button>
+            <button class="tipo-btn" onclick="setTipo('balcao', this)">Balcão</button>
+          </div>
+
+          <div id="mesasView">
+            <p class="mesa-title">Selecione uma mesa</p>
+            <div class="mesas-grid" id="mesasGrid"></div>
+          </div>
+          <div id="balcaoView" style="display:none">
+            <p class="mesa-title">Selecione um assento no balcão</p>
+            <div class="mesas-grid" id="balcaoGrid"></div>
+          </div>
+        </div>
+
+        <div class="reserva-confirm">
+          <p class="reserva-summary" id="reservaSummary">Selecione uma mesa para continuar</p>
+          <button class="btn-primary" onclick="confirmarReserva()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            Confirmar Reserva
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CARDÁPIO ── -->
+  <section id="cardapio">
+    <div class="reveal">
+      <div class="section-tag">Cardápio</div>
+      <h2>Sabores que<br /><em>contam histórias</em></h2>
+    </div>
+    <div class="menu-tabs" id="menuTabs">
+      <button class="menu-tab active" data-cat="entradas">Entradas</button>
+      <button class="menu-tab" data-cat="pratos">Pratos Principais</button>
+      <button class="menu-tab" data-cat="sobremesas">Sobremesas</button>
+      <button class="menu-tab" data-cat="bebidas">Bebidas</button>
+    </div>
+    <div class="menu-grid reveal" id="menuGrid" style="transition-delay:0.1s"></div>
+  </section>
+
+  <!-- ── GALERIA ── -->
+  <section id="galeria">
+    <div class="reveal" style="text-align:center; max-width: 600px; margin: 0 auto 0;">
+      <div class="section-tag" style="justify-content:center">Galeria</div>
+      <h2>Nosso <em>ambiente</em></h2>
+    </div>
+    <div class="galeria-grid reveal" style="transition-delay:0.15s" id="galeriaGrid"></div>
+  </section>
+
+  <!-- ── CONTATO ── -->
+  <section id="contato">
+    <div class="reveal">
+      <div class="section-tag">Contato</div>
+      <h2>Venha nos <em>visitar</em></h2>
+    </div>
+    <div class="contato-grid">
+      <div class="contato-info reveal" style="transition-delay:0.1s">
+        <div class="contato-item">
+          <div class="contato-icon">📍</div>
+          <div>
+            <p class="contato-item-title">Endereço</p>
+            <p class="contato-item-text">Rua das Flores, 144 — Pelourinho<br />Salvador, Bahia · CEP 40020-000</p>
+          </div>
+        </div>
+        <div class="contato-item">
+          <div class="contato-icon">📞</div>
+          <div>
+            <p class="contato-item-title">Telefone</p>
+            <p class="contato-item-text">(71) 9999-8888</p>
+            <a href="https://wa.me/5571999998888" target="_blank" class="whatsapp-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              Chamar no WhatsApp
+            </a>
+          </div>
+        </div>
+        <div class="contato-item">
+          <div class="contato-icon">🕐</div>
+          <div>
+            <p class="contato-item-title">Horários</p>
+            <p class="contato-item-text">
+              Terça a Quinta: 12h às 23h<br />
+              Sexta e Sábado: 12h às 01h<br />
+              Domingo: 12h às 21h<br />
+              Segunda: Fechado
+            </p>
+          </div>
+        </div>
+        <div class="contato-item">
+          <div class="contato-icon">✉️</div>
+          <div>
+            <p class="contato-item-title">Email</p>
+            <p class="contato-item-text">contato@bardouce.com.br</p>
+          </div>
+        </div>
+      </div>
+      <div class="contato-map reveal" style="transition-delay:0.2s">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3887.3!2d-38.5117!3d-12.9713!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU4JzE2LjciUyAzOMKwMzAnNDIuMSJX!5e0!3m2!1spt!2sbr!4v1700000000000!5m2!1spt!2sbr"
+          allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+          title="Localização Bar do Bruce">
+        </iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-brand">
+      <p class="logo">Bar do <span>Bruce</span></p>
+      <p>Uma experiência gastronômica única em Salvador. Tradição baiana com sofisticação moderna.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Navegação</h4>
+      <a href="#hero">Início</a>
+      <a href="#sobre">Sobre</a>
+      <a href="#reservas">Reservas</a>
+      <a href="#cardapio">Cardápio</a>
+      <a href="#galeria">Galeria</a>
+      <a href="#contato">Contato</a>
+    </div>
+    <div class="footer-hours">
+      <h4>Funcionamento</h4>
+      <p>Terça a Quinta: 12h — 23h<br/>
+      Sexta e Sábado: 12h — 01h<br/>
+      Domingo: 12h — 21h<br/>
+      Segunda: <span style="color:var(--gray2)">Fechado</span></p>
+    </div>
+  </footer>
+  <div class="footer-bottom">
+    <p>© 2025 Bar do Bruce · Salvador, Bahia</p>
+    <p>Feito com ♥ em Salvador</p>
+  </div>
+
+<script>
+/* ── DATA ── */
+const menuData = {
+  entradas: [
+    { name: 'Coxinha do Carmo', desc: 'Coxinha de aipim + frango + aioli de alho', price: 'R$20', img: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&q=80', tag: 'Tradicional' },
+    { name: 'Tarde em Itapoã', desc: 'Caldo de aipim + camarão + leite de coco', price: 'R$23', img: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=600&q=80', tag: 'Mar e Terra' },
+    { name: 'Olodum', desc: 'Bolinho de aipim + charque + requeijão', price: 'R$20', img: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80', tag: 'Baiano' },
+  ],
+  pratos: [
+    { name: 'Temporal', desc: 'Risoto + filé mignon + cogumelos', price: 'R$60', img: 'https://images.unsplash.com/photo-1476124369491-e7addf5db371?w=600&q=80', tag: 'Chef' },
+    { name: 'Primavera', desc: 'Risoto + gorgonzola + damasco + amêndoas', price: 'R$60', img: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=600&q=80', tag: 'Vegetariano' },
+    { name: 'Oceano', desc: 'Espaguete + camarão + pesto', price: 'R$65', img: 'https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=600&q=80', tag: 'Mar' },
+  ],
+  sobremesas: [
+    { name: 'Aconchego', desc: 'Mousse de chocolate + castanhas', price: 'R$22', img: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600&q=80', tag: 'Chocolate' },
+    { name: 'Reconvexo', desc: 'Creme de limão + crumble + merengue', price: 'R$20', img: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=600&q=80', tag: 'Cítrico' },
+  ],
+  bebidas: [
+    { name: 'Caipirinha', desc: 'Cachaça, limão, açúcar e gelo', price: 'R$23', noImg: true },
+    { name: 'Mojito', desc: 'Rum, hortelã, limão, açúcar e água com gás', price: 'R$25', noImg: true },
+    { name: 'Sex on the Beach', desc: 'Vodka, pêssego, suco de laranja e cranberry', price: 'R$28', noImg: true },
+    { name: 'Água', desc: 'Mineral com ou sem gás', price: 'R$6', noImg: true },
+    { name: 'Refrigerantes', desc: 'Cola, guaraná, laranja ou limão', price: 'R$7', noImg: true },
+    { name: 'Heineken', desc: 'Garrafa long neck 330ml gelada', price: 'R$12', noImg: true },
+  ]
+};
+
+const galeriaImgs = [
+  { src: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=80', alt: 'Ambiente' },
+  { src: 'https://images.unsplash.com/photo-1551218808-94e220e084d2?w=600&q=80', alt: 'Bar' },
+  { src: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80', alt: 'Prato' },
+  { src: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80', alt: 'Ambiente 2' },
+  { src: 'https://images.unsplash.com/photo-1482275548304-a58859dc31b7?w=600&q=80', alt: 'Detalhe' },
+  { src: 'https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?w=600&q=80', alt: 'Cocktail' },
+];
+
+/* ── MESA DATA ── */
+const mesaConfig = [
+  { id:'M1', label:'Mesa 1', status:'disponivel' },
+  { id:'M2', label:'Mesa 2', status:'disponivel' },
+  { id:'M3', label:'Mesa 3', status:'ocupado' },
+  { id:'M4', label:'Mesa 4', status:'disponivel' },
+  { id:'M5', label:'Mesa 5', status:'disponivel' },
+  { id:'M6', label:'Mesa 6', status:'ocupado' },
+  { id:'M7', label:'Mesa 7', status:'disponivel' },
+  { id:'M8', label:'Mesa 8', status:'disponivel' },
+];
+const balcaoConfig = [
+  { id:'B1', label:'Assento 1', status:'disponivel' },
+  { id:'B2', label:'Assento 2', status:'ocupado' },
+  { id:'B3', label:'Assento 3', status:'disponivel' },
+  { id:'B4', label:'Assento 4', status:'disponivel' },
+  { id:'B5', label:'Assento 5', status:'ocupado' },
+  { id:'B6', label:'Assento 6', status:'disponivel' },
+];
+
+let selectedMesa = null;
+let currentTipo = 'mesa';
+
+/* ── CURSOR ── */
+const cursor = document.getElementById('cursor');
+const cursorRing = document.getElementById('cursorRing');
+if(window.matchMedia('(pointer:fine)').matches){
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    setTimeout(()=>{ cursorRing.style.left = e.clientX + 'px'; cursorRing.style.top = e.clientY + 'px'; }, 80);
+  });
+}
+
+/* ── HEADER SCROLL ── */
+window.addEventListener('scroll', () => {
+  document.getElementById('header').classList.toggle('scrolled', window.scrollY > 40);
+});
+
+/* ── MOBILE NAV ── */
+function toggleMobileNav(){
+  const nav = document.getElementById('mobileNav');
+  const ham = document.getElementById('hamburger');
+  nav.classList.toggle('open');
+  ham.classList.toggle('open');
+  document.body.style.overflow = nav.classList.contains('open') ? 'hidden' : '';
+}
+function closeMobileNav(){
+  document.getElementById('mobileNav').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ── SCROLL REVEAL ── */
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); } });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+/* ── MESAS RENDER ── */
+function renderMesas(container, data){
+  container.innerHTML = '';
+  data.forEach(m => {
+    const card = document.createElement('div');
+    card.className = `mesa-card ${m.status}`;
+    const statusText = m.status === 'ocupado' ? 'Ocupado' : (selectedMesa === m.id ? 'Selecionado' : 'Disponível');
+    const statusClass = m.status === 'ocupado' ? 'cinza' : (selectedMesa === m.id ? 'sel' : 'verde');
+    card.innerHTML = `<div class="mesa-icon">${currentTipo === 'mesa' ? '🪑' : '🍺'}</div>
+      <div class="mesa-label">${m.label}</div>
+      <div class="mesa-status ${statusClass}">${statusText}</div>`;
+    if(m.status !== 'ocupado'){
+      card.addEventListener('click', () => selectMesa(m.id, container, data));
+    }
+    if(selectedMesa === m.id) card.classList.add('selecionado');
+    container.appendChild(card);
+  });
+}
+function selectMesa(id, container, data){
+  selectedMesa = id;
+  renderMesas(container, data);
+  updateSummary();
+}
+function updateSummary(){
+  const s = document.getElementById('reservaSummary');
+  const date = document.getElementById('resDate').value;
+  const time = document.getElementById('resTime').value;
+  const pax = document.getElementById('resPax').value;
+  if(selectedMesa && date && time){
+    s.innerHTML = `<strong>${selectedMesa}</strong> · ${date} às ${time} · ${pax}`;
+  } else if(selectedMesa){
+    s.innerHTML = `<strong>${selectedMesa}</strong> selecionado — escolha data e horário`;
+  } else {
+    s.textContent = 'Selecione uma mesa para continuar';
+  }
+}
+document.getElementById('resDate').addEventListener('change', updateSummary);
+document.getElementById('resTime').addEventListener('change', updateSummary);
+
+function setTipo(tipo, btn){
+  currentTipo = tipo;
+  selectedMesa = null;
+  document.querySelectorAll('.tipo-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const mv = document.getElementById('mesasView');
+  const bv = document.getElementById('balcaoView');
+  if(tipo === 'mesa'){ mv.style.display='block'; bv.style.display='none'; renderMesas(document.getElementById('mesasGrid'), mesaConfig); }
+  else { bv.style.display='block'; mv.style.display='none'; renderMesas(document.getElementById('balcaoGrid'), balcaoConfig); }
+  updateSummary();
+}
+
+function confirmarReserva(){
+  const date = document.getElementById('resDate').value;
+  const time = document.getElementById('resTime').value;
+  if(!selectedMesa){ showToast('⚠️ Selecione uma mesa ou assento'); return; }
+  if(!date){ showToast('⚠️ Selecione a data'); return; }
+  if(!time){ showToast('⚠️ Selecione o horário'); return; }
+  showToast(`✅ Reserva confirmada! <span class="toast-accent">${selectedMesa}</span> em ${date} às ${time}`);
+}
+
+/* ── CARDÁPIO ── */
+function renderMenu(cat){
+  const grid = document.getElementById('menuGrid');
+  grid.innerHTML = '';
+  grid.style.opacity = '0'; grid.style.transform = 'translateY(12px)';
+  setTimeout(()=>{
+    menuData[cat].forEach(item => {
+      const card = document.createElement('div');
+      card.className = `menu-card${item.noImg ? ' no-img' : ''}`;
+      card.innerHTML = item.noImg
+        ? `<div class="menu-card-body">
+            <div>
+              <div class="menu-card-name">${item.name}</div>
+              <div class="menu-card-desc">${item.desc}</div>
+            </div>
+            <div class="menu-card-foot">
+              <span class="menu-card-price">${item.price}</span>
+              <span class="menu-card-tag">Bebida</span>
+            </div>
+           </div>`
+        : `<div style="overflow:hidden">
+            <img class="menu-card-img" src="${item.img}" alt="${item.name}" loading="lazy" />
+           </div>
+           <div class="menu-card-body">
+            <div class="menu-card-name">${item.name}</div>
+            <div class="menu-card-desc">${item.desc}</div>
+            <div class="menu-card-foot">
+              <span class="menu-card-price">${item.price}</span>
+              <span class="menu-card-tag">${item.tag||''}</span>
+            </div>
+           </div>`;
+      grid.appendChild(card);
+    });
+    grid.style.transition='opacity 0.4s,transform 0.4s';
+    grid.style.opacity='1'; grid.style.transform='translateY(0)';
+  }, 100);
+}
+document.getElementById('menuTabs').addEventListener('click', e => {
+  const btn = e.target.closest('.menu-tab');
+  if(!btn) return;
+  document.querySelectorAll('.menu-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderMenu(btn.dataset.cat);
+});
+
+/* ── GALERIA ── */
+function renderGaleria(){
+  const grid = document.getElementById('galeriaGrid');
+  galeriaImgs.forEach(img => {
+    const item = document.createElement('div');
+    item.className = 'galeria-item';
+    item.innerHTML = `<img class="galeria-img" src="${img.src}" alt="${img.alt}" loading="lazy" />
+      <div class="galeria-overlay"><span class="galeria-overlay-icon">⊕</span></div>`;
+    item.addEventListener('click', () => openLightbox(img.src, img.alt));
+    grid.appendChild(item);
+  });
+}
+
+/* ── LIGHTBOX ── */
+function openLightbox(src, alt){
+  const lb = document.getElementById('lightbox');
+  document.getElementById('lbImg').src = src;
+  document.getElementById('lbImg').alt = alt;
+  lb.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+document.getElementById('lbClose').addEventListener('click', closeLightbox);
+document.getElementById('lightbox').addEventListener('click', e => { if(e.target === e.currentTarget) closeLightbox(); });
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeLightbox(); });
+function closeLightbox(){
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ── TOAST ── */
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.innerHTML = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3500);
+}
+
+/* ── INIT ── */
+renderMesas(document.getElementById('mesasGrid'), mesaConfig);
+renderMesas(document.getElementById('balcaoGrid'), balcaoConfig);
+renderMenu('entradas');
+renderGaleria();
+
+// Set min date for reservations
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('resDate').min = today;
+</script>
+</body>
+</html>
