@@ -3,11 +3,5 @@
   "buildCommand": "next build",
   "devCommand": "next dev",
   "installCommand": "npm install",
-  "regions": ["gru1"],
-  "env": {
-    "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": "@stripe_publishable_key",
-    "STRIPE_SECRET_KEY": "@stripe_secret_key",
-    "RESEND_API_KEY": "@resend_api_key",
-    "EMAIL_TO": "@email_to"
-  }
+  "regions": ["gru1"]
 }
