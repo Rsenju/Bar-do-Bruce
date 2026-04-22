@@ -39,7 +39,7 @@ export const horarios = [
 // ─── Reserva: valor da taxa de reserva (em Pix) ─────────────────────────
 // R$50,00 de taxa. Esse valor será totalmente revertido em consumo.
 
-export const TAXA_RESERVA_CENTAVOS = 1000;
+export const TAXA_RESERVA_CENTAVOS = 5000;
 
 // ─── Cardápio ─────────────────────────────────────────────────────────────────
 
@@ -68,7 +68,7 @@ export const cardapio: ItemCardapio[] = [
     nome: "Olodum",
     descricao: "Bolinho de aipim + charque + requeijão (3)",
     preco: "R$20",
-    imagem: "/img/olodum.jpg",
+    imagem: "/img/Olodum.jpg",
     tag: "Baiano",
     categoria: "entradas",
   },
@@ -79,7 +79,7 @@ export const cardapio: ItemCardapio[] = [
     nome: "Temporal",
     descricao: "Risoto + filé mignon + cogumelos",
     preco: "R$60",
-    imagem: "/img/temporal.jpg",
+    imagem: "/img/Temporal.jpg",
     tag: "Chef",
     categoria: "pratos",
   },
@@ -88,7 +88,7 @@ export const cardapio: ItemCardapio[] = [
     nome: "Primavera",
     descricao: "Risoto + gorgonzola + damasco + amêndoas",
     preco: "R$60",
-    imagem: "/img/primavera.jpg",
+    imagem: "/img/Primavera.jpg",
     tag: "Vegetariano",
     categoria: "pratos",
   },
@@ -97,7 +97,7 @@ export const cardapio: ItemCardapio[] = [
     nome: "Oceano",
     descricao: "Espaguete + camarão + pesto",
     preco: "R$65",
-    imagem: "/img/oceano.jpg",
+    imagem: "/img/Oceano.jpg",
     tag: "Mar",
     categoria: "pratos",
   },
@@ -108,7 +108,7 @@ export const cardapio: ItemCardapio[] = [
     nome: "Aconchego",
     descricao: "Mousse de chocolate + castanhas",
     preco: "R$22",
-    imagem: "/img/aconchego.jpg",
+    imagem: "/img/Aconchego.jpg",
     tag: "Chocolate",
     categoria: "sobremesas",
   },
@@ -117,7 +117,7 @@ export const cardapio: ItemCardapio[] = [
     nome: "Reconvexo",
     descricao: "Creme de limão + crumble + merengue",
     preco: "R$20",
-    imagem: "/img/reconvexo.jpg",
+    imagem: "/img/Reconvexo.jpg",
     tag: "Cítrico",
     categoria: "sobremesas",
   },

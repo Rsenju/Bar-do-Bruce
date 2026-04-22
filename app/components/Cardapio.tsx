@@ -13,20 +13,23 @@ export default function Cardapio() {
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      entries => entries.forEach(e => {
-        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target) }
+      entries => entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible')
+          observer.unobserve(entry.target)
+        }
       }),
       { threshold: 0.1 }
     )
-    sectionRef.current?.querySelectorAll('.reveal').forEach(el => observer.observe(el))
+    sectionRef.current?.querySelectorAll('.reveal').forEach(element => observer.observe(element))
     return () => observer.disconnect()
   }, [])
 
-  const handleCategory = (cat: CategoriaCardapio) => {
-    if (cat === activeCategory) return
+  const handleCategory = (category: CategoriaCardapio) => {
+    if (category === activeCategory) return
     setAnimating(true)
     setTimeout(() => {
-      setActiveCategory(cat)
+      setActiveCategory(category)
       setAnimating(false)
     }, 200)
   }
@@ -38,33 +41,32 @@ export default function Cardapio() {
     <section id="cardapio" ref={sectionRef} className="section-pad bg-bg2">
       <div className="reveal">
         <div className="section-tag">Cardápio</div>
-        <h2 className="font-playfair font-black tracking-[-0.02em] leading-[1.1]"
-          style={{ fontSize: 'clamp(2.2rem, 5vw, 3.8rem)' }}>
-          Sabores que<br /><em className="italic text-accent">contam histórias</em>
+        <p className="font-script text-[clamp(1.8rem,4vw,3.4rem)] text-[var(--accent-light)] leading-none">
+          Cozinha de estreia
+        </p>
+        <h2 className="mt-3 font-playfair font-black tracking-[-0.03em] leading-[1.05]" style={{ fontSize: 'clamp(2.2rem, 5vw, 4rem)' }}>
+          Sabores que
+          <br />
+          <em className="not-italic text-accent">marcam presença</em>
         </h2>
       </div>
 
-      {/* Category tabs */}
-      <div className="reveal mt-8 border-b border-white/[0.07] flex flex-wrap" style={{ transitionDelay: '0.05s' }}>
-        {categorias.map(cat => (
+      <div className="reveal mt-8 border-b border-[#404040] flex flex-wrap" style={{ transitionDelay: '0.05s' }}>
+        {categorias.map(category => (
           <button
-            key={cat.key}
-            onClick={() => handleCategory(cat.key as CategoriaCardapio)}
-            className={`
-              px-5 py-3 text-[0.72rem] font-semibold tracking-[0.1em] uppercase
-              border-b-2 -mb-px transition-all duration-200
-              ${activeCategory === cat.key
-                ? 'text-accent border-accent'
-                : 'text-gray-DEFAULT border-transparent hover:text-white'
-              }
-            `}
+            key={category.key}
+            onClick={() => handleCategory(category.key as CategoriaCardapio)}
+            className={`px-6 py-3 text-[0.78rem] font-semibold tracking-[0.1em] uppercase border-b-2 -mb-px transition-all duration-200 ${
+              activeCategory === category.key
+                ? 'text-[var(--accent-light)] border-[var(--accent-light)]'
+                : 'text-white border-transparent hover:text-[var(--accent-light)] hover:border-[rgba(166,139,91,0.4)]'
+            }`}
           >
-            {cat.label}
+            {category.label}
           </button>
         ))}
       </div>
 
-      {/* ── Bebidas: compact list layout ── */}
       {isBebidas && (
         <div
           ref={gridRef}
@@ -77,14 +79,14 @@ export default function Cardapio() {
           }}
         >
           <div className="grid gap-0" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
-            {items.map((item, i) => (
+            {items.map(item => (
               <div
                 key={item.id}
-                className="flex items-center justify-between gap-4 px-5 py-4 border-b border-white/[0.06] hover:bg-white/[0.02] transition-colors duration-200 group"
+                className="flex items-center justify-between gap-4 px-5 py-5 border-b border-[#2c2c2c] hover:bg-white/[0.02] transition-colors duration-200 group"
               >
                 <div className="flex items-start gap-4">
-                  <div className="w-9 h-9 rounded-full bg-accent/10 border border-accent/20 flex items-center justify-center shrink-0 mt-0.5">
-                    <span className="text-base">
+                  <div className="w-12 h-12 rounded-full bg-[rgba(166,139,91,0.08)] border border-[rgba(166,139,91,0.35)] flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-[1.35rem] leading-none">
                       {item.id === 'caipirinha' ? '🍋' :
                        item.id === 'mojito' ? '🌿' :
                        item.id === 'sex-on-the-beach' ? '🍹' :
@@ -94,18 +96,17 @@ export default function Cardapio() {
                     </span>
                   </div>
                   <div>
-                    <p className="text-[0.9rem] font-semibold text-white font-playfair">{item.nome}</p>
-                    <p className="text-[0.78rem] text-gray-DEFAULT mt-0.5">{item.descricao}</p>
+                    <p className="text-[0.96rem] font-semibold text-white font-playfair">{item.nome}</p>
+                    <p className="text-[0.8rem] text-gray-DEFAULT mt-0.5">{item.descricao}</p>
                   </div>
                 </div>
-                <span className="font-playfair text-[1.05rem] font-bold text-accent shrink-0">{item.preco}</span>
+                <span className="font-playfair text-[1.05rem] font-bold text-[var(--accent-light)] shrink-0">{item.preco}</span>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {/* ── Other categories: card grid ── */}
       {!isBebidas && (
         <div
           ref={gridRef}
@@ -121,9 +122,8 @@ export default function Cardapio() {
           {items.map(item => (
             <div
               key={item.id}
-              className="group bg-bg3 border border-white/[0.07] rounded overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-accent/25 hover:shadow-[0_20px_60px_rgba(0,0,0,0.4)]"
+              className="group bg-[#171717] border border-[#404040] rounded-[26px] overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-accent/40 hover:shadow-[0_20px_60px_rgba(0,0,0,0.35)]"
             >
-              {/* Image */}
               <div className="relative aspect-[3/2] overflow-hidden bg-bg2">
                 <Image
                   src={item.imagem!}
@@ -133,23 +133,21 @@ export default function Cardapio() {
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                   loading="lazy"
                 />
-                {/* Tag */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[rgba(18,18,18,0.38)] to-transparent" />
                 {item.tag && (
-                  <div className="absolute top-3 left-3 bg-bg/80 backdrop-blur-sm border border-white/10 rounded px-2.5 py-1">
+                  <div className="absolute top-3 left-3 bg-[rgba(18,18,18,0.82)] backdrop-blur-sm border border-white/10 rounded-full px-3 py-1">
                     <span className="text-[0.6rem] font-semibold tracking-[0.1em] uppercase text-gray-DEFAULT">{item.tag}</span>
                   </div>
                 )}
               </div>
 
-              {/* Body */}
               <div className="p-5">
-                <h3 className="font-playfair text-[1.1rem] font-semibold leading-tight">{item.nome}</h3>
-                <p className="mt-2 text-[0.82rem] text-gray-DEFAULT leading-[1.6]">{item.descricao}</p>
+                <h3 className="font-playfair text-[1.15rem] font-semibold leading-tight">{item.nome}</h3>
+                <p className="mt-2 text-[0.84rem] text-gray-DEFAULT leading-[1.7]">{item.descricao}</p>
                 <div className="mt-4 pt-4 border-t border-white/[0.06] flex items-center justify-between">
                   <span className="font-playfair text-[1.15rem] font-bold text-accent">{item.preco}</span>
                   <span className="text-[0.65rem] font-semibold tracking-[0.08em] uppercase text-gray-dark">
-                    {activeCategory === 'entradas' ? 'Entrada' :
-                     activeCategory === 'pratos' ? 'Prato Principal' : 'Sobremesa'}
+                    {activeCategory === 'entradas' ? 'Entrada' : activeCategory === 'pratos' ? 'Principal' : 'Sobremesa'}
                   </span>
                 </div>
               </div>

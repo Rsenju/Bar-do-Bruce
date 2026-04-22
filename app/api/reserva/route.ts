@@ -1,37 +1,42 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { enviarEmailReserva } from '@/app/lib/email'
-import { gerarReservaId, formatarReais, formatarDataBR } from '@/app/lib/utils'
 import { mesas, balcao, TAXA_RESERVA_CENTAVOS } from '@/app/lib/data'
-import type { ReservaPayload } from '@/app/lib/types'
+import { formatarDataBR, formatarReais, gerarReservaId } from '@/app/lib/utils'
+import type { ReservaPayload, ReservaResumo } from '@/app/lib/types'
 
 export async function POST(req: NextRequest) {
   try {
     const body: ReservaPayload = await req.json()
-
-    // ── Validações ──────────────────────────────────────────────────────────
-    const { nome, email, pessoas, data, horario, tipo, mesaId, capacidade } = body
+    const { nome, email, telefone, pessoas, data, horario, tipo, mesaId } = body
 
     if (!nome || !email || !pessoas || !data || !horario || !tipo || !mesaId) {
       return NextResponse.json(
-        { success: false, error: 'Todos os campos são obrigatórios.' },
+        { success: false, error: 'Todos os campos obrigatórios precisam ser preenchidos.' },
         { status: 400 }
       )
     }
 
-    // Validar capacidade
+    if (pessoas > 4) {
+      return NextResponse.json(
+        { success: false, error: 'As reservas em mesa são limitadas a até 4 pessoas.' },
+        { status: 400 }
+      )
+    }
+
     if (tipo === 'mesa') {
-      const mesa = mesas.find(m => m.id === Number(mesaId))
+      const mesa = mesas.find(item => item.id === Number(mesaId))
+
       if (!mesa) {
         return NextResponse.json(
           { success: false, error: 'Mesa não encontrada.' },
           { status: 400 }
         )
       }
+
       if (pessoas > mesa.capacidade) {
         return NextResponse.json(
           {
             success: false,
-            error: `Esta mesa comporta no máximo ${mesa.capacidade} pessoas. Você selecionou ${pessoas}.`,
+            error: `Esta mesa comporta no máximo ${mesa.capacidade} pessoa(s).`,
           },
           { status: 400 }
         )
@@ -40,46 +45,44 @@ export async function POST(req: NextRequest) {
 
     if (tipo === 'balcao' && pessoas > balcao.lugares) {
       return NextResponse.json(
-        {
-          success: false,
-          error: `O balcão tem ${balcao.lugares} assentos. Você selecionou ${pessoas} pessoa(s).`,
-        },
+        { success: false, error: `O balcão possui ${balcao.lugares} assentos.` },
         { status: 400 }
       )
     }
 
-    // Validar email básico
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
       return NextResponse.json(
-        { success: false, error: 'Email inválido.' },
+        { success: false, error: 'Informe um email válido.' },
         { status: 400 }
       )
     }
 
-    // ── Criar reserva ────────────────────────────────────────────────────────
     const reservaId = gerarReservaId()
-    const valorPago = formatarReais(TAXA_RESERVA_CENTAVOS)
-    const dataFormatada = formatarDataBR(data)
-
-    // ── Enviar email ─────────────────────────────────────────────────────────
-    await enviarEmailReserva({
-      ...body,
-      data: dataFormatada,
+    const reserva: ReservaResumo = {
+      nome,
+      email,
+      telefone,
+      data: formatarDataBR(data),
+      horario,
+      mesa: tipo === 'mesa' ? `Mesa ${mesaId}` : `Balcão ${String(mesaId).replace('B', '')}`,
+      pessoas,
+      tipo,
       reservaId,
-      valorPago,
-    })
+      valorPago: formatarReais(TAXA_RESERVA_CENTAVOS),
+    }
 
-    // ── Resposta ─────────────────────────────────────────────────────────────
     return NextResponse.json({
       success: true,
       reservaId,
-      message: `Reserva confirmada! ID: ${reservaId}`,
+      reserva,
+      message: 'Pré-reserva criada com sucesso.',
     })
-  } catch (err) {
-    console.error('[api/reserva] Erro:', err)
+  } catch (error) {
+    console.error('[api/reserva] erro ao criar pré-reserva', error)
+
     return NextResponse.json(
-      { success: false, error: 'Erro interno. Tente novamente.' },
+      { success: false, error: 'Erro interno ao criar a reserva.' },
       { status: 500 }
     )
   }

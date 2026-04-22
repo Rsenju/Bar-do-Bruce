@@ -29,7 +29,7 @@ function buildEmailHTML(reserva: ReservaPayload & { reservaId: string; valorPago
           <tr>
             <td style="background:#0A0A0A;padding:32px 40px;border-bottom:1px solid rgba(255,255,255,0.06);">
               <h1 style="margin:0;font-family:Georgia,serif;font-size:28px;font-weight:900;color:#FFFFFF;letter-spacing:-0.5px;">
-                Bar do <span style="color:#C8F542;">Bruce</span>
+                Bar do <span style="color:#A68B5B;">Bruce</span>
               </h1>
               <p style="margin:6px 0 0;font-size:12px;color:#9CA3AF;letter-spacing:0.15em;text-transform:uppercase;">
                 Pelourinho · Salvador, Bahia
@@ -40,7 +40,7 @@ function buildEmailHTML(reserva: ReservaPayload & { reservaId: string; valorPago
           <!-- Hero -->
           <tr>
             <td style="padding:36px 40px 28px;background:linear-gradient(135deg,#141414 0%,#1A1A1A 100%);">
-              <p style="margin:0 0 8px;font-size:11px;font-weight:600;color:#C8F542;letter-spacing:0.2em;text-transform:uppercase;">
+                <p style="margin:0 0 8px;font-size:11px;font-weight:600;color:#A68B5B;letter-spacing:0.2em;text-transform:uppercase;">
                 ✓ Reserva Confirmada
               </p>
               <h2 style="margin:0;font-family:Georgia,serif;font-size:26px;font-weight:700;color:#FFFFFF;line-height:1.2;">
@@ -58,7 +58,7 @@ function buildEmailHTML(reserva: ReservaPayload & { reservaId: string; valorPago
               <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid rgba(255,255,255,0.07);border-radius:3px;overflow:hidden;">
                 <tr>
                   <td colspan="2" style="padding:16px 20px;background:rgba(200,245,66,0.06);border-bottom:1px solid rgba(255,255,255,0.07);">
-                    <p style="margin:0;font-size:11px;font-weight:600;color:#C8F542;letter-spacing:0.15em;text-transform:uppercase;">
+                    <p style="margin:0;font-size:11px;font-weight:600;color:#A68B5B;letter-spacing:0.15em;text-transform:uppercase;">
                       Detalhes da Reserva
                     </p>
                   </td>
@@ -89,7 +89,7 @@ function buildEmailHTML(reserva: ReservaPayload & { reservaId: string; valorPago
               <table width="100%" cellpadding="0" cellspacing="0" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:3px;padding:20px;">
                 <tr>
                   <td style="padding:16px 20px;">
-                    <p style="margin:0 0 6px;font-size:11px;font-weight:600;color:#C8F542;letter-spacing:0.15em;text-transform:uppercase;">📍 Como Chegar</p>
+                    <p style="margin:0 0 6px;font-size:11px;font-weight:600;color:#A68B5B;letter-spacing:0.15em;text-transform:uppercase;">📍 Como Chegar</p>
                     <p style="margin:0;font-size:14px;color:#FFFFFF;">Ladeira do Carmo, nº 2 — Pelourinho</p>
                     <p style="margin:2px 0 0;font-size:13px;color:#9CA3AF;">Salvador, Bahia · CEP 40301-100</p>
                   </td>
@@ -103,7 +103,7 @@ function buildEmailHTML(reserva: ReservaPayload & { reservaId: string; valorPago
             <td style="padding:24px 40px;border-top:1px solid rgba(255,255,255,0.06);background:#0A0A0A;">
               <p style="margin:0;font-size:12px;color:#4B5563;line-height:1.6;">
                 Precisa cancelar ou alterar? Entre em contato pelo WhatsApp ou email:<br />
-                <a href="mailto:contatobardobruce@gmail.com" style="color:#C8F542;text-decoration:none;">contatobardobruce@gmail.com</a>
+                <a href="mailto:contatobardobruce@gmail.com" style="color:#A68B5B;text-decoration:none;">contatobardobruce@gmail.com</a>
               </p>
               <p style="margin:12px 0 0;font-size:11px;color:#374151;">
                 © ${new Date().getFullYear()} Bar do Bruce — Todos os direitos reservados.

@@ -1,8 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
-
 const navLinks = [
   { href: '#hero', label: 'Home' },
   { href: '#cardapio', label: 'Cardápio' },
@@ -31,12 +29,12 @@ export default function Header() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 px-[5%] h-[70px] flex items-center justify-between transition-all duration-300 ${
-          scrolled ? 'bg-[rgba(10,10,10,0.94)] backdrop-blur-[18px] border-b border-white/[0.07]' : ''
+        className={`fixed top-0 left-0 right-0 z-50 px-[5%] h-[72px] flex items-center justify-between transition-all duration-300 ${
+          scrolled ? 'bg-[rgba(18,18,18,0.94)] backdrop-blur-[18px] border-b border-[#404040]' : ''
         }`}
       >
         {/* Logo */}
-        <a href="#hero" className="font-playfair text-[1.35rem] font-black tracking-tight leading-none">
+        <a href="#hero" className="font-playfair text-[1.45rem] font-black tracking-[0.02em] leading-none">
           Bar do <span className="text-accent">Bruce</span>
         </a>
 
@@ -49,7 +47,7 @@ export default function Header() {
               className="relative text-[0.75rem] font-semibold tracking-[0.12em] uppercase text-gray-DEFAULT hover:text-white transition-colors duration-200 group"
             >
               {link.label}
-              <span className="absolute -bottom-1 left-0 w-0 h-px bg-accent transition-all duration-300 group-hover:w-full" />
+              <span className="absolute -bottom-1 left-0 w-0 h-px bg-[var(--accent-light)] transition-all duration-300 group-hover:w-full" />
             </a>
           ))}
           <a
@@ -74,7 +72,7 @@ export default function Header() {
 
       {/* Mobile overlay nav */}
       <div
-        className={`fixed inset-0 z-40 bg-bg flex flex-col items-center justify-center gap-8 transition-opacity duration-300 ${
+        className={`fixed inset-0 z-40 bg-[rgba(18,18,18,0.98)] flex flex-col items-center justify-center gap-8 transition-opacity duration-300 ${
           mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
       >

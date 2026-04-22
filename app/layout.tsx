@@ -1,5 +1,5 @@
-import type { Metadata } from 'next'
-import { Playfair_Display, Inter } from 'next/font/google'
+import type { Metadata, Viewport } from 'next'
+import { Great_Vibes, Montserrat, Playfair_Display } from 'next/font/google'
 import '@/styles/globals.css'
 import { negocio } from '@/app/lib/data'
 
@@ -13,10 +13,17 @@ const playfair = Playfair_Display({
   display: 'swap',
 })
 
-const inter = Inter({
+const greatVibes = Great_Vibes({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600'],
-  variable: '--font-inter',
+  weight: '400',
+  variable: '--font-script',
+  display: 'swap',
+})
+
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  weight: ['500', '600', '700'],
+  variable: '--font-ui',
   display: 'swap',
 })
 
@@ -48,7 +55,10 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
-  themeColor: '#0A0A0A',
+}
+
+export const viewport: Viewport = {
+  themeColor: '#121212',
 }
 
 // ─── Layout ───────────────────────────────────────────────────────────────────
@@ -59,7 +69,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="pt-BR" className={`${playfair.variable} ${inter.variable}`}>
+    <html lang="pt-BR" className={`${playfair.variable} ${greatVibes.variable} ${montserrat.variable}`}>
       <body>{children}</body>
     </html>
   )

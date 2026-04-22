@@ -1,63 +1,88 @@
-import { NextRequest, NextResponse } from "next/server";
-import { TAXA_RESERVA_CENTAVOS } from "@/app/lib/data";
-import type { PagamentoPayload } from "@/app/lib/types";
+import { NextRequest, NextResponse } from 'next/server'
+import { enviarEmailReserva } from '@/app/lib/email'
+import { TAXA_RESERVA_CENTAVOS } from '@/app/lib/data'
+import { formatarReais, gerarCodigoBarras, gerarPixKeyAleatoria } from '@/app/lib/utils'
+import type { PagamentoPayload, ReservaResumo } from '@/app/lib/types'
+
+function getPixKey() {
+  return process.env.NEXT_PUBLIC_PIX_KEY || process.env.PIX_KEY || gerarPixKeyAleatoria()
+}
+
+function buildReservaResumo(body: PagamentoPayload): ReservaResumo {
+  return {
+    nome: body.nome,
+    email: body.email,
+    telefone: body.telefone || '',
+    data: body.data || '',
+    horario: body.horario || '',
+    mesa: body.mesa || '',
+    pessoas: body.pessoas || 1,
+    tipo: body.tipo || 'mesa',
+    reservaId: body.reservaId,
+    valorPago: formatarReais(TAXA_RESERVA_CENTAVOS),
+  }
+}
 
 export async function POST(req: NextRequest) {
   try {
-    // ── Verificar chave Stripe ────────────────────────────────────────────────
-    if (!process.env.STRIPE_SECRET_KEY) {
-      console.warn(
-        "[api/pagamento] STRIPE_SECRET_KEY não configurada — modo simulado",
-      );
-      // Retornar mock para desenvolvimento sem Stripe configurado
+    const body: PagamentoPayload = await req.json()
+
+    if (!body.reservaId || !body.nome || !body.email) {
+      return NextResponse.json(
+        { success: false, error: 'Dados insuficientes para processar o pagamento.' },
+        { status: 400 }
+      )
+    }
+
+    if (body.action === 'confirm') {
+      const reserva = buildReservaResumo(body)
+      const emailResult = await enviarEmailReserva({
+        nome: reserva.nome,
+        email: reserva.email,
+        telefone: reserva.telefone,
+        pessoas: reserva.pessoas,
+        data: reserva.data,
+        horario: reserva.horario,
+        tipo: reserva.tipo,
+        mesaId: reserva.mesa,
+        mesaLabel: reserva.mesa,
+        capacidade: reserva.pessoas,
+        reservaId: reserva.reservaId,
+        valorPago: reserva.valorPago,
+      })
+
+      if (!emailResult.success) {
+        return NextResponse.json(
+          { success: false, error: emailResult.error || 'Falha ao enviar o email da reserva.' },
+          { status: 500 }
+        )
+      }
+
       return NextResponse.json({
         success: true,
-        clientSecret: "pi_mock_secret_for_development",
-        paymentIntentId: `pi_mock_${Date.now()}`,
-        mock: true,
-      });
+        reserva,
+      })
     }
 
-    const body: PagamentoPayload = await req.json();
-    const { reservaId, nome, email } = body;
-
-    if (!reservaId) {
-      return NextResponse.json(
-        { success: false, error: "reservaId é obrigatório." },
-        { status: 400 },
-      );
-    }
-
-    // ── Importar Stripe ───────────────────────────────────────────────────────
-    const Stripe = (await import("stripe")).default;
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: "2024-06-20",
-    });
-
-    // ── Criar Payment Intent ──────────────────────────────────────────────────
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: TAXA_RESERVA_CENTAVOS,
-      currency: "brl",
-      description: `Taxa de reserva — Bar do Bruce (${reservaId})`,
-      metadata: {
-        reservaId,
-        nome,
-        email,
-      },
-      receipt_email: email || undefined,
-    });
+    const reserva = buildReservaResumo(body)
+    const pixKey = getPixKey()
+    const barcodeValue = gerarCodigoBarras(`${body.reservaId}${body.nome}`)
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString()
 
     return NextResponse.json({
       success: true,
-      clientSecret: paymentIntent.client_secret,
-      paymentIntentId: paymentIntent.id,
-    });
-  } catch (err) {
-    console.error("[api/pagamento] Erro Stripe:", err);
-    const message = err instanceof Error ? err.message : "Erro no pagamento";
+      pixKey,
+      barcodeValue,
+      expiresAt,
+      reserva,
+      copiedMessage: 'Chave Pix copiada com sucesso.',
+    })
+  } catch (error) {
+    console.error('[api/pagamento] erro ao processar pagamento', error)
+
     return NextResponse.json(
-      { success: false, error: message },
-      { status: 500 },
-    );
+      { success: false, error: 'Erro interno ao preparar o pagamento Pix.' },
+      { status: 500 }
+    )
   }
 }

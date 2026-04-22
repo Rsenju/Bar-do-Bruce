@@ -25,9 +25,23 @@ export interface ReservaPayload {
   capacidade: number
 }
 
+export interface ReservaResumo {
+  nome: string
+  email: string
+  telefone: string
+  data: string
+  horario: string
+  mesa: string
+  pessoas: number
+  tipo: 'mesa' | 'balcao'
+  reservaId: string
+  valorPago: string
+}
+
 export interface ReservaResponse {
   success: boolean
   reservaId?: string
+  reserva?: ReservaResumo
   message?: string
   error?: string
 }
@@ -51,14 +65,23 @@ export interface ItemCardapio {
 
 export interface PagamentoPayload {
   reservaId: string
-  valor: number // em centavos
   nome: string
   email: string
+  action?: 'create' | 'confirm'
+  telefone?: string
+  data?: string
+  horario?: string
+  mesa?: string
+  pessoas?: number
+  tipo?: 'mesa' | 'balcao'
 }
 
 export interface PagamentoResponse {
   success: boolean
-  clientSecret?: string
-  paymentIntentId?: string
+  pixKey?: string
+  barcodeValue?: string
+  expiresAt?: string
+  reserva?: ReservaResumo
+  copiedMessage?: string
   error?: string
 }
